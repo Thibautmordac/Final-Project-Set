@@ -3,11 +3,15 @@ import sys
 import random
 
 class Kaarten:
-    def __init__(self, number, symbol, color, shading):
+    def __init__(self, color, symbol, shading, number):
         self.number = number
         self.symbol = symbol
         self.color = color
         self.shading = shading
+    
+kleuren = {'r':'red', 'g': 'green', 'p': 'purple'}
+symbolen = {'d': 'diamond', 's': 'squiggle', 'o': 'oval'}
+schaduw = {'e': 'empty', 'f': 'filled', 's': 'shaded'}
 
 basis = os.path.dirname(os.path.abspath(__file__))
 kaarten = os.path.join(basis, 'kaarten')
@@ -26,26 +30,23 @@ def displaying_cards(): #de kaarten die op 'tafel' liggen
         displayed.append(kaart_trekken(stapel))
     return displayed
 
-cards = displaying_cards()
+kaarten_op_tafel = displaying_cards()
 
 from PIL import Image #geeft bijhorende afbeelding bij naam van een kaart
-beginkaart = Image.open(os.path.join(kaarten, f'{cards[0]}.gif'))
-b, h = beginkaart.size
-r = 3
-k = 4
-alles = Image.new('RGBA', (k*b, r*h), (255, 255, 255, 255)) #'alles' is een afbeelding vn 12 kaarten
+def show_table(cards):
+    beginkaart = Image.open(os.path.join(kaarten, f'{cards[0]}.gif'))
+    b, h = beginkaart.size
+    r = 3
+    k = 4
+    alles = Image.new('RGBA', (k*b, r*h), (255, 255, 255, 255)) #'alles' is een afbeelding van 12 kaarten
 
-for x, card in enumerate(cards): 
-    foto = Image.open(os.path.join(kaarten, f'{card}.gif'))
-    p = (x%k)*b
-    q = (x//k)*h
-    alles.paste(foto, (p, q))
+    for x, card in enumerate(cards): 
+        foto = Image.open(os.path.join(kaarten, f'{card}.gif'))
+        p = (x%k)*b
+        q = (x//k)*h
+        alles.paste(foto, (p, q))
 
-def eigenschappen_van_kaart(card):
-    nummer = ['1', '2', '3']
-    kleur = ['red', 'green', 'purple']
-    symbool = ['diamond', 'squiggle', 'oval']
-    schaduw = ['empty', 'filled', 'shaded']
+    alles.show()
 
 def eigenschappen_van_kaart(card): #Vindt de eigenschappen van een kaart en zet het om in een Kaart object.
     color = kleuren[card[0]]
