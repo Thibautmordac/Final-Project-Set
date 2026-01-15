@@ -46,4 +46,14 @@ def eigenschappen_van_kaart(card):
     kleur = ['red', 'green', 'purple']
     symbool = ['diamond', 'squiggle', 'oval']
     schaduw = ['empty', 'filled', 'shaded']
+
+def eigenschappen_van_kaart(card): #Vindt de eigenschappen van een kaart en zet het om in een Kaart object.
+    color = kleuren[card[0]]
+    card1 = card[len(kleuren[card[0]]):]
+    symbol = symbolen[card1[0]]
+    card2 = card1[len(symbolen[card1[0]]):]
+    shading = schaduw[card2[0]]
+    number = card2[len(schaduw[card2[0]]):]
+    eigenschappen_van_kaart = Kaarten(color, symbol, shading, number)
+    return eigenschappen_van_kaart
     
