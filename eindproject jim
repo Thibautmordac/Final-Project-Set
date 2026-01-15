@@ -57,4 +57,12 @@ def eigenschappen_van_kaart(card): #Vindt de eigenschappen van een kaart en zet 
     number = card2[len(schaduw[card2[0]]):]
     eigenschappen_van_kaart = Kaarten(color, symbol, shading, number)
     return eigenschappen_van_kaart
+
+def is_set(card1, card2, card3):
+        eigenschappen = ["color", "symbol", "shading", "number"]
+        for eig in eigenschappen:
+            waarden = {getattr(card1, eig), getattr(card2, eig), getattr(card3, eig)}
+            if len(waarden) == 2:
+                return False
+        return True 
     
