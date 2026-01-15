@@ -1,0 +1,49 @@
+import os
+import sys
+import random
+
+class Kaarten:
+    def __init__(self, number, symbol, color, shading):
+        self.number = number
+        self.symbol = symbol
+        self.color = color
+        self.shading = shading
+
+basis = os.path.dirname(os.path.abspath(__file__))
+kaarten = os.path.join(basis, 'kaarten')
+
+fotos = os.listdir(kaarten) #is een lijst van de bestandsnamen van foto's
+stapel = [os.path.splitext(f)[0] for f in fotos] #de stapel kaarten
+
+def kaart_trekken(deck):
+    kaart = random.choice(deck)
+    deck.remove(kaart)
+    return kaart
+
+def displaying_cards(): #de kaarten die op 'tafel' liggen
+    displayed = []
+    while len(displayed) < 12:
+        displayed.append(kaart_trekken(stapel))
+    return displayed
+
+cards = displaying_cards()
+
+from PIL import Image #geeft bijhorende afbeelding bij naam van een kaart
+beginkaart = Image.open(os.path.join(kaarten, f'{cards[0]}.gif'))
+b, h = beginkaart.size
+r = 3
+k = 4
+alles = Image.new('RGBA', (k*b, r*h), (255, 255, 255, 255)) #'alles' is een afbeelding vn 12 kaarten
+
+for x, card in enumerate(cards): 
+    foto = Image.open(os.path.join(kaarten, f'{card}.gif'))
+    p = (x%k)*b
+    q = (x//k)*h
+    alles.paste(foto, (p, q))
+
+def eigenschappen_van_kaart(card):
+    nummer = ['1', '2', '3']
+    kleur = ['red', 'green', 'purple']
+    symbool = ['diamond', 'squiggle', 'oval']
+    schaduw = ['empty', 'filled', 'shaded']
+    
