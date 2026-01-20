@@ -1,0 +1,9 @@
+class Card:
+    def __init__(self, number, color, shape, shading):
+        self.number = number
+        self.color = color
+        self.shape = shape
+        self.shading = shading
+
+    def __repr__(self):
+        return f"Card({self.number}, {self.color}, {self.shape}, {self.shading})"
