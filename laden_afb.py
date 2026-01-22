@@ -2,6 +2,7 @@ from is_set import *
 import os
 import pygame
 
+#laadt afbeeldingen
 def laden_afb():
     global afb_kaarten
     map = 'kaarten'
