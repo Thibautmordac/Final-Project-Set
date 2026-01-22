@@ -16,3 +16,10 @@ def toon_tafel(kaarten, indices, bericht, score):
         score_tekst = lettertype.render(f'Speler: {score['Speler']}     Computer: {score['Computer']}', True, (0,0,0))
         scherm.blit(score_tekst, (scherm.get_width() - 325 , 10))
         pygame.display.flip()
+
+def vervang_drie(tafel, stapel):
+    """vervangt de 3 kaarten die zijn verdwenen van de tafel met degene van de stapel"""
+    if len(stapel) >= 3:
+        for _ in range(3):
+            tafel.pop(0)
+            tafel.insert(0, stapel.pop(0))
