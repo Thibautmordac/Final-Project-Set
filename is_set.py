@@ -22,3 +22,10 @@ def is_set(k1, k2, k3):
             (k1.symbol+k2.symbol+k3.symbol % 3) == 0 and
             (k1.shading+k2.shading+k3.shading) % 3 == 0 and
             (k1.color+k2.color+k3.color) % 3 == 0)
+
+#zoekt naar een set
+def vind_set(kaarten):
+    for combo in itertools.combinations(kaarten, 3):
+        if is_set(*combo):
+            return combo
+    return None
