@@ -1,4 +1,5 @@
 import pygame
+import sys
 #volgende variabelen worden meerdere keren gebruikt in heel de code
 #te maken met het beeld van de kaarten
 kaartbreedte = 120
@@ -11,5 +12,7 @@ kaart_per_rij = 3
 schermbreedte = kaart_per_rij * (kaartbreedte * x_marge) + x_marge
 schermlengte = 4 * (kaartlengte + y_marge) + 100
 scherm = pygame.display.set_mode((schermbreedte, schermlengte))
-lettertype = pygame.font.SysFont(None, 24)
-grote_letter = pygame.font.SysFont(None, 48)
+FONT_GROOTTE = 24
+FONT_GROOT = 48
+
+
