@@ -11,11 +11,15 @@ from beurt_speler import *
 
 pygame.init()
 
+lettertype = pygame.font.SysFont(None, FONT_GROOTTE)
+grote_letter = pygame.font.SysFont(None, FONT_GROOT)
+
 def main():
     laden_afb()
     stapel = creëren_stapel()
     random.shuffle(stapel)
     scores = {'Speler':0, 'Computer':0}
+
     tafel = []
     for _ in range(12):
         tafel.append(stapel.pop(0))
