@@ -11,8 +11,9 @@ from beurt_speler import *
 
 pygame.init()
 
-lettertype = pygame.font.SysFont(None, FONT_GROOTTE)
+kleine_letter = pygame.font.SysFont(None, FONT_KLEIN)
 grote_letter = pygame.font.SysFont(None, FONT_GROOT)
+scherm = pygame.display.set_mode((SCHERM_BREEDTE, SCHERM_HOOGTE))
 
 def main():
     laden_afb()
@@ -25,8 +26,8 @@ def main():
         tafel.append(stapel.pop(0))
 
     while True:
-        toon_tafel(tafel, [], '', scores)
-        gevonden = beurt_speler(tafel, stapel, scores, '')
+        toon_tafel(tafel, [], '', scores, scherm, kleine_letter, grote_letter)
+        gevonden = beurt_speler(tafel, stapel, scores, '', scherm, kleine_letter, grote_letter)
         if gevonden:
             if len(tafel) < 3 or (not stapel and not vind_set(tafel)):
                 break
@@ -49,7 +50,7 @@ def main():
         else:
             break
     
-    toon_tafel(tafel, [], 'Game Over', scores)
+    toon_tafel(tafel, [], 'Game Over', scores, scherm, kleine_letter, grote_letter)
     print(f"Eindscores: Speler = {scores['Speler']}, Computer = {scores['Computer']}")
     pygame.quit()
 if __name__ == '__main__':
