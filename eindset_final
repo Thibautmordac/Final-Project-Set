@@ -7,26 +7,25 @@ import sys
 import os
 
 #variabelen te maken met het beeld van de kaarten (en het spel opzich zelf)
-pygame.init()
 kaartbreedte = 120
 kaartlengte = 150
 x_marge = 30
 y_marge = 30
-kaart_per_rij = 3
+kaart_per_rij = 4
 SCHERM_BREEDTE = kaart_per_rij * (kaartbreedte + x_marge) + x_marge
-SCHERM_HOOGTE = 4 * (kaartlengte + y_marge) + 100
+SCHERM_HOOGTE = 3 * (kaartlengte + y_marge) + 100
 FONT_KLEIN = 24
 FONT_GROOT = 48
 
 #Alle eigenschappen van de kaarten met de bijhorende waarden
 kleuren = ['red', 'purple', 'green']
 symbolen = ['oval', 'squiggle', 'diamond']
-schaduw = ['empty', 'filled', 'shaded']
+vulling = ['empty', 'filled', 'shaded']
 
 #wordt later gevuld met kaarten en zijn eigenschappen
 afb_kaarten = {}
 #start alle geïmporteerde pygame-modules
-
+pygame.init()
 
 #maakt hoofdvenster aan met een titel
 scherm = pygame.display.set_mode((SCHERM_BREEDTE, SCHERM_HOOGTE))
@@ -69,19 +68,19 @@ def vind_set(kaarten):
     return None
 
 def laden_afb():
-    """laadt afbeeldingen van kaarten in het spel
+    """laadt afbeeldingen van kaarten in het geheugen
     en slaat ze op in 'afb_kaarten' """
     global afb_kaarten
     map = 'kaarten'
     for color in kleuren:
         for symbol in symbolen:
-            for shading in schaduw:
+            for shading in vulling:
                 for number in [1,2,3]:
                     bestandsnaam = f'{color}{symbol}{shading}{number}.gif'
                     pad = os.path.join(map, bestandsnaam)
                     if os.path.isfile(pad):
                         afb = pygame.image.load(pad).convert_alpha()
-                        key = (kleuren.index(color), symbolen.index(symbol), schaduw.index(shading), number)
+                        key = (kleuren.index(color), symbolen.index(symbol), vulling.index(shading), number)
                         afb_kaarten[key] = afb
 
 
