@@ -1,0 +1,205 @@
+import random
+import itertools
+import time
+import pygame
+import sys
+import os
+
+
+
+#volgende variabelen worden meerdere keren gebruikt in heel de code
+#te maken met het beeld van de kaarten
+kaartbreedte = 120
+kaartlengte = 150
+x_marge = 30
+y_marge = 30
+kaart_per_rij = 3
+
+#variabelen hebben te maken met uitstraling van de scherm als geheel
+SCHERM_BREEDTE = kaart_per_rij * (kaartbreedte + x_marge) + x_marge
+SCHERM_HOOGTE = 4 * (kaartlengte + y_marge) + 100
+FONT_KLEIN = 24
+FONT_GROOT = 48
+
+
+kleuren = ['red', 'purple', 'green']
+symbolen = ['oval', 'squiggle', 'diamond']
+schaduw = ['empty', 'filled', 'shaded']
+afb_kaarten = {}
+
+pygame.init()
+
+scherm = pygame.display.set_mode((SCHERM_BREEDTE, SCHERM_HOOGTE))
+pygame.display.set_caption("SET Game")
+
+kleine_letter = pygame.font.SysFont(None, FONT_KLEIN)
+grote_letter = pygame.font.SysFont(None, FONT_GROOT)
+
+
+
+class Kaart:
+    def __init__(self, color, symbol, shading, number):
+        self.color = color
+        self.symbol = symbol
+        self.shading = shading
+        self.number = number
+    
+    def __repr__(self):
+        return f'Kaart({self.color}, {self.symbol}, {self.shading}, {self.number})'
+
+
+def is_set(k1, k2, k3):
+    return (
+        (k1.number + k2.number + k3.number) % 3 == 0 and
+        (k1.color + k2.color + k3.color) % 3 == 0 and
+        (k1.symbol + k2.symbol + k3.symbol) % 3 == 0 and
+        (k1.shading + k2.shading + k3.shading) % 3 == 0
+    )
+
+def creëren_stapel():
+    """Genereert een stapel van 81 kaarten met enkel getallen"""
+    stapel = [Kaart(k, sy, sc, g) for k in range(3) for sy in range(3) for sc in range(3) for g in range(3)]
+    return stapel
+
+#zoekt naar een set
+def vind_set(kaarten):
+    for combo in itertools.combinations(kaarten, 3):
+        if is_set(*combo):
+            return combo
+    return None
+
+def laden_afb():
+    global afb_kaarten
+    map = 'kaarten'
+    for color in kleuren:
+        for symbol in symbolen:
+            for shading in schaduw:
+                for number in [1,2,3]:
+                    bestandsnaam = f'{color}{symbol}{shading}{number}.gif'
+                    pad = os.path.join(map, bestandsnaam)
+                    if os.path.isfile(pad):
+                        afb = pygame.image.load(pad).convert_alpha()
+                        key = (kleuren.index(color), symbolen.index(symbol), schaduw.index(shading), number)
+                        afb_kaarten[key] = afb
+
+
+def kaart_trekken(kaart, x, y, index, gekozen=False, scherm=None):
+    """Trekt kaart uit de stapel"""
+    bg = (180,220,255) if gekozen else (240,240,240)
+    pygame.draw.rect(scherm, bg, (x, y, kaartbreedte, kaartlengte))
+    key = (kaart.color, kaart.symbol, kaart.shading, kaart.number + 1)
+    if key in afb_kaarten:
+        afb = afb_kaarten[key]
+        rect = afb.get_rect(center=(x + kaartbreedte // 2, y + kaartlengte // 2 + 10))
+        scherm.blit(afb, rect)
+
+def toon_tafel(kaarten, indices, bericht, score, scherm, lettertype, grote_letter):
+    scherm.fill((255,255,255))
+    for p, kaart in enumerate(kaarten):
+        rij = p // kaart_per_rij
+        kolom = p % kaart_per_rij
+        x = x_marge + kolom * (kaartbreedte+x_marge)
+        y = y_marge + rij * (kaartlengte+y_marge)
+        kaart_trekken(kaart, x, y, p, p in indices, scherm)
+
+    if bericht:
+        tekst = grote_letter.render(bericht, True, (0,150,0))
+        scherm.blit(tekst, (scherm.get_width()//2 - 100, scherm.get_height() - 75))
+
+    score_tekst = lettertype.render(
+        f"Speler: {score['Speler']}     Computer: {score['Computer']}",
+        True, (0,0,0)
+    )
+    scherm.blit(score_tekst, (scherm.get_width() - 325 , 10))
+
+    pygame.display.flip()   
+
+
+
+
+def beurt_speler(tafel, stapel, score, bericht, scherm, kleine_letter, grote_letter):
+    """Zorgt ervoor dat knoppen werken, er een tijdslimiet is
+    , scores worden bijgewerkt en stapel wordt aangepast"""
+    geklikt = []
+    start_tijd = time.time()
+    while time.time() - start_tijd < 30:
+        toon_tafel(tafel, geklikt, bericht, score, scherm, kleine_letter, grote_letter)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                mx, my = event.pos
+                kolom = mx // (kaartbreedte+x_marge)
+                rij = my // (kaartlengte+y_marge)
+                idx = rij * kaart_per_rij + kolom
+                if 0 <= idx < len(tafel):
+                    if idx in geklikt:
+                        geklikt.remove(idx)
+                    else:
+                        geklikt.append(idx)
+                    if len(geklikt) == 3:
+                        if is_set(tafel[geklikt[0]], tafel[geklikt[1]], tafel[geklikt[2]]):
+                            score['Speler'] += 1
+                            for p in sorted(geklikt, reverse=True):
+                                if stapel:
+                                    tafel[p] = stapel.pop(0)
+                                else:
+                                    del tafel[p]
+                            while len(tafel) < 12 and stapel:
+                                tafel.append(stapel.pop(0))
+                            geklikt.clear()
+                            return True
+                        else:
+                            geklikt.clear()
+                            bericht = 'Is geen SET'
+    return False
+
+
+def vervang_drie(tafel, stapel):
+    """vervangt de 3 kaarten die zijn verdwenen van de tafel met degene van de stapel"""
+    if len(stapel) >= 3:
+        for _ in range(3):
+            tafel.pop(0)
+            tafel.insert(0, stapel.pop(0))
+
+def main():
+    laden_afb()
+    stapel = creëren_stapel()
+    random.shuffle(stapel)
+    scores = {'Speler':0, 'Computer':0}
+
+    tafel = []
+    for _ in range(12):
+        tafel.append(stapel.pop(0))
+
+    while True:
+        toon_tafel(tafel, [], '', scores, scherm, kleine_letter, grote_letter)
+        gevonden = beurt_speler(tafel, stapel, scores, '', scherm, kleine_letter, grote_letter)
+        if gevonden:
+            if len(tafel) < 3 or (not stapel and not vind_set(tafel)):
+                break
+            continue
+
+        while not vind_set(tafel) and len(stapel) >= 3:
+            vervang_drie(tafel, stapel)
+
+        een_set = vind_set(tafel)
+        if een_set:
+            scores['Computer'] += 1
+            for kaart in een_set:
+                idx = tafel.index(kaart)
+                if stapel:
+                    tafel[idx] = stapel.pop(0)
+                else:
+                    del tafel[idx]
+            while len(tafel) < 12 and stapel:
+                tafel.append(stapel.pop(0))
+        else:
+            break
+    
+    toon_tafel(tafel, [], 'Game Over', scores, scherm, kleine_letter, grote_letter)
+    print(f"Eindscores: Speler = {scores['Speler']}, Computer = {scores['Computer']}")
+    pygame.quit()
+if __name__ == '__main__':
+    main()
