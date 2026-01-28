@@ -45,15 +45,16 @@ class Kaart:
         self.number = number
     
     def __repr__(self):
-        k = f'Kaart({self.color}, {self.symbol}, {self.shading}, {self.number})'
+        return f'Kaart({self.color}, {self.symbol}, {self.shading}, {self.number})'
 
 
 def is_set(k1, k2, k3):
-    return ((k1.number+k2.number+k3.number % 3) == 0 and
-            (k1.symbol+k2.symbol+k3.symbol % 3) == 0 and
-            (k1.shading+k2.shading+k3.shading) % 3 == 0 and
-            (k1.color+k2.color+k3.color) % 3 == 0)
-
+    return (
+        (k1.number + k2.number + k3.number) % 3 == 0 and
+        (k1.color + k2.color + k3.color) % 3 == 0 and
+        (k1.symbol + k2.symbol + k3.symbol) % 3 == 0 and
+        (k1.shading + k2.shading + k3.shading) % 3 == 0
+    )
 
 def creëren_stapel():
     """Genereert een stapel van 81 kaarten met enkel getallen"""
