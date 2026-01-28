@@ -1,0 +1,18 @@
+import itertools
+from stapel import creëren_stapel
+from is_set import *
+def mogelijke_sets(kaarten_op_tafel):
+    """Geeft alle mogelijke SET's terug van een collectie van 12 kaarten"""
+    mogelijke_sets = []
+    for combo in itertools.combinations(kaarten_op_tafel, 3):
+        if is_set(*combo):
+            mogelijke_sets.append(combo)
+    return mogelijke_sets
+#test case
+tafel = creëren_stapel()[:12]
+print(tafel)
+gevonden = mogelijke_sets(tafel)
+
+print(f"Het aantal mogelijke sets zijn: {len(gevonden)}")
+for x in gevonden:
+    print(x)
