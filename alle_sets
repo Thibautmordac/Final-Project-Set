@@ -1,4 +1,5 @@
 import itertools
+import random
 from stapel import creëren_stapel
 from is_set import *
 def mogelijke_sets(kaarten_op_tafel):
@@ -8,11 +9,18 @@ def mogelijke_sets(kaarten_op_tafel):
         if is_set(*combo):
             mogelijke_sets.append(combo)
     return mogelijke_sets
-#test case
-tafel = creëren_stapel()[:12]
-print(tafel)
+#test case voor 12 willekeurige kaarten
+stapel = creëren_stapel()
+tafel = random.sample(stapel, 12)
+print([kleuren[k.color]+symbolen[k.symbol]+vulling[k.shading]+str(k.number+1) for k in tafel])
 gevonden = mogelijke_sets(tafel)
 
+def obj_naar_str(k):
+    return kleuren[k.color]+symbolen[k.symbol]+vulling[k.shading]+str(k.number+1)
+
 print(f"Het aantal mogelijke sets zijn: {len(gevonden)}")
-for x in gevonden:
-    print(x)
+for p, set in enumerate(gevonden, start=1):
+    print(f'SET {p}')
+    for k in set:
+        print(' ', obj_naar_str(k))
+    print()
