@@ -8,6 +8,7 @@ import sys
 import os
 
 #variabelen te maken met het beeld van de kaarten (en het spel opzich zelf)
+pygame.init() #start alle geïmporteerde pygame-modules
 kaartbreedte = 120
 kaartlengte = 150
 x_marge = 30
@@ -25,8 +26,6 @@ vulling = ['empty', 'filled', 'shaded']
 
 #wordt later gevuld met kaarten en zijn eigenschappen
 afb_kaarten = {}
-#start alle geïmporteerde pygame-modules
-pygame.init()
 
 #maakt hoofdvenster aan met een titel
 scherm = pygame.display.set_mode((SCHERM_BREEDTE, SCHERM_HOOGTE))
