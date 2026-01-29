@@ -1,3 +1,4 @@
+#Run in deze bestand het spel!
 #import statements die later noodzakelijk zijn in de code
 import random
 import itertools
@@ -57,7 +58,7 @@ def is_set(k1, k2, k3):
 
 def creëren_stapel():
     """Genereert een stapel van 81 kaarten met enkel getallen"""
-    stapel = [Kaart(k, sy, sc, g) for k in range(3) for sy in range(3) for sc in range(3) for g in range(3)]
+    stapel = [Kaart(k, sy, vu, g) for k in range(3) for sy in range(3) for vu in range(3) for g in range(3)]
     return stapel
 
 def vind_set(kaarten):
@@ -201,7 +202,15 @@ def main():
             break
     
     toon_tafel(tafel, [], 'Game Over', scores, scherm, kleine_letter, grote_letter)
+    pygame.time.delay(4000)
+    if scores['Speler'] > scores['Computer']:
+        toon_tafel(tafel, [], 'Jij hebt gewonnen!', scores, scherm, kleine_letter, grote_letter)
+    elif scores['Speler'] == scores['Computer']:
+        toon_tafel(tafel, [], 'Gelijkspel!', scores, scherm, kleine_letter, grote_letter)
+    else:
+        toon_tafel(tafel, [], 'Jij hebt verloren!', scores, scherm, kleine_letter, grote_letter)
     print(f"Eindscores: Speler = {scores['Speler']}, Computer = {scores['Computer']}")
+    pygame.time.delay(4000)
     pygame.quit()
 if __name__ == '__main__':
     main()
